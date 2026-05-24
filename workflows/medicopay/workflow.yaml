@@ -1,0 +1,8 @@
+definition: definition.json
+name: MediCopay
+slug: medicopay
+status: active
+triggers:
+  - active: true
+    phoneNumberId: "1116152648243594"
+    triggerType: inbound_message

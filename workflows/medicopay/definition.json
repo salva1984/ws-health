@@ -1,0 +1,983 @@
+{
+  "edges": [
+    {
+      "label": "next",
+      "source": "start",
+      "target": "route_message"
+    },
+    {
+      "label": "next",
+      "source": "route_message",
+      "target": "decide_route"
+    },
+    {
+      "label": "identify",
+      "source": "decide_route",
+      "target": "ask_dni"
+    },
+    {
+      "label": "symptom",
+      "source": "decide_route",
+      "target": "ask_symptom"
+    },
+    {
+      "label": "estimate",
+      "source": "decide_route",
+      "target": "compute_estimate"
+    },
+    {
+      "label": "location",
+      "source": "decide_route",
+      "target": "ask_share_location"
+    },
+    {
+      "label": "chat",
+      "source": "decide_route",
+      "target": "chat_agent"
+    },
+    {
+      "label": "next",
+      "source": "ask_dni",
+      "target": "wait_dni"
+    },
+    {
+      "label": "next",
+      "source": "wait_dni",
+      "target": "process_dni"
+    },
+    {
+      "label": "next",
+      "source": "process_dni",
+      "target": "decide_dni"
+    },
+    {
+      "label": "max_attempts",
+      "source": "decide_dni",
+      "target": "dni_max_attempts"
+    },
+    {
+      "label": "invalid",
+      "source": "decide_dni",
+      "target": "dni_error"
+    },
+    {
+      "label": "valid",
+      "source": "decide_dni",
+      "target": "show_patient_info"
+    },
+    {
+      "label": "next",
+      "source": "dni_error",
+      "target": "wait_dni"
+    },
+    {
+      "label": "next",
+      "source": "show_patient_info",
+      "target": "ask_symptom"
+    },
+    {
+      "label": "next",
+      "source": "ask_symptom",
+      "target": "wait_symptom"
+    },
+    {
+      "label": "next",
+      "source": "wait_symptom",
+      "target": "classify_symptom"
+    },
+    {
+      "label": "next",
+      "source": "classify_symptom",
+      "target": "decide_emergency"
+    },
+    {
+      "label": "emergency",
+      "source": "decide_emergency",
+      "target": "emergency_msg"
+    },
+    {
+      "label": "normal",
+      "source": "decide_emergency",
+      "target": "send_specialty"
+    },
+    {
+      "label": "next",
+      "source": "send_specialty",
+      "target": "compute_estimate"
+    },
+    {
+      "label": "next",
+      "source": "compute_estimate",
+      "target": "decide_estimate"
+    },
+    {
+      "label": "empty",
+      "source": "decide_estimate",
+      "target": "no_results_msg"
+    },
+    {
+      "label": "has_results",
+      "source": "decide_estimate",
+      "target": "send_estimate_summary"
+    },
+    {
+      "label": "next",
+      "source": "send_estimate_summary",
+      "target": "send_hospital_list"
+    },
+    {
+      "label": "next",
+      "source": "send_hospital_list",
+      "target": "wait_hospital"
+    },
+    {
+      "label": "next",
+      "source": "wait_hospital",
+      "target": "process_hospital"
+    },
+    {
+      "label": "next",
+      "source": "process_hospital",
+      "target": "decide_hospital_valid"
+    },
+    {
+      "label": "invalid",
+      "source": "decide_hospital_valid",
+      "target": "hospital_invalid_msg"
+    },
+    {
+      "label": "valid",
+      "source": "decide_hospital_valid",
+      "target": "send_breakdown"
+    },
+    {
+      "label": "next",
+      "source": "hospital_invalid_msg",
+      "target": "wait_hospital"
+    },
+    {
+      "label": "next",
+      "source": "send_breakdown",
+      "target": "generate_pdf"
+    },
+    {
+      "label": "next",
+      "source": "generate_pdf",
+      "target": "send_pdf_link"
+    },
+    {
+      "label": "next",
+      "source": "send_pdf_link",
+      "target": "estimate_done"
+    },
+    {
+      "label": "next",
+      "source": "find_nearest",
+      "target": "send_location_results"
+    },
+    {
+      "label": "next",
+      "source": "send_location_results",
+      "target": "location_followup"
+    },
+    {
+      "label": "next",
+      "source": "ask_share_location",
+      "target": "wait_location"
+    },
+    {
+      "label": "next",
+      "source": "wait_location",
+      "target": "find_nearest"
+    }
+  ],
+  "nodes": [
+    {
+      "data": {
+        "config": {},
+        "node_type": "start"
+      },
+      "id": "start",
+      "position": {
+        "x": 50,
+        "y": 350
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "routemessage",
+          "function_slug": "route-message",
+          "save_response_to": "route_result"
+        },
+        "display_name": "Function: routemessage",
+        "node_type": "function"
+      },
+      "id": "route_message",
+      "position": {
+        "x": 200,
+        "y": 350
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Usuario nuevo, necesita identificación",
+              "id": "4d7ae75a-e502-48d3-91fd-ddeadc1c3b6d",
+              "label": "identify"
+            },
+            {
+              "description": "Preguntar síntoma directamente",
+              "id": "88adee31-6e97-4362-9d53-73b339095694",
+              "label": "symptom"
+            },
+            {
+              "description": "Recalcular estimación",
+              "id": "16f34ef2-c3ff-4e87-888a-fceccdb094e5",
+              "label": "estimate"
+            },
+            {
+              "description": "Buscar hospitales cercanos",
+              "id": "4c1d709f-c5a0-499f-8caa-639108ab1e6f",
+              "label": "location"
+            },
+            {
+              "description": "Conversación general",
+              "id": "1c4467b9-f291-40bc-86be-cd6d79432eea",
+              "label": "chat"
+            }
+          ],
+          "decision_type": "function",
+          "function_name": "Decide by Variable",
+          "function_slug": "decide-by-variable",
+          "llm_configuration": {}
+        },
+        "display_name": "Decision: Function",
+        "node_type": "decide"
+      },
+      "id": "decide_route",
+      "position": {
+        "x": 400,
+        "y": 350
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "👋 Hola, soy *MediCopay*, tu asistente de cobertura médica.\n\nPara estimar tu copago necesito identificarte.\nEnvíame tu *cédula* (solo números).\n\n*DNIs de demo disponibles:*\n1712345678, 0998765432, 1798765432, 1701234567, 1234567890",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "ask_dni",
+      "position": {
+        "x": 400,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "dni_input",
+          "timeout_seconds": 300
+        },
+        "display_name": "Wait for Response (300s timeout)",
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_dni",
+      "position": {
+        "x": 600,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "Process DNI",
+          "function_slug": "process-dni",
+          "save_response_to": "dni_result"
+        },
+        "display_name": "Function: Process DNI",
+        "node_type": "function"
+      },
+      "id": "process_dni",
+      "position": {
+        "x": 800,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "DNI válido y paciente encontrado",
+              "id": "92f33729-220a-46f7-af02-3c82709a37a1",
+              "label": "valid"
+            },
+            {
+              "description": "DNI inválido o paciente no encontrado",
+              "id": "51f9bb16-bcca-4d94-8650-a91e0d92ef83",
+              "label": "invalid"
+            },
+            {
+              "description": "Demasiados intentos fallidos de DNI",
+              "id": "9d8465c3-ecfc-46fb-9b62-bcf335ec1127",
+              "label": "max_attempts"
+            }
+          ],
+          "decision_type": "function",
+          "function_name": "Decide by Variable",
+          "function_slug": "decide-by-variable",
+          "llm_configuration": {}
+        },
+        "display_name": "Decision: Function",
+        "node_type": "decide"
+      },
+      "id": "decide_dni",
+      "position": {
+        "x": 1000,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "❌ No encontré el afiliado o la cédula es inválida.\nInténtalo de nuevo.\n\n*DNIs de demo:* 1712345678, 0998765432, 1798765432, 1701234567, 1234567890",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "dni_error",
+      "position": {
+        "x": 1000,
+        "y": -50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "✅ ¡Hola *{{vars.patient_name}}*!\nPlan: *{{vars.plan_name}}*\nDeducible consumido: ${{vars.deductible_consumed}} / ${{vars.deductible_annual}}\n\nAhora cuéntame, *¿qué síntoma tienes?*",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "show_patient_info",
+      "position": {
+        "x": 1200,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "🩺 Cuéntame qué síntoma tienes o qué tipo de consulta necesitas. Describe con tus palabras.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "ask_symptom",
+      "position": {
+        "x": 1200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "symptom_input",
+          "timeout_seconds": 300
+        },
+        "display_name": "Wait for Response (300s timeout)",
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_symptom",
+      "position": {
+        "x": 1400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "routemessage",
+          "function_slug": "route-message",
+          "save_response_to": "_symptom_result"
+        },
+        "display_name": "Function: routemessage",
+        "node_type": "function"
+      },
+      "id": "classify_symptom",
+      "position": {
+        "x": 1600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Es una emergencia médica",
+              "id": "605b28ea-490d-48e4-b6d8-48d0fcaff43d",
+              "label": "emergency"
+            },
+            {
+              "description": "No es emergencia",
+              "id": "dd2cb6e1-63f0-4e3a-9717-1aa9c08723c5",
+              "label": "normal"
+            }
+          ],
+          "decision_type": "function",
+          "function_name": "Decide by Variable",
+          "function_slug": "decide-by-variable",
+          "llm_configuration": {}
+        },
+        "display_name": "Decision: Function",
+        "node_type": "decide"
+      },
+      "id": "decide_emergency",
+      "position": {
+        "x": 1800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "🚨 *POSIBLE EMERGENCIA MÉDICA* 🚨\n\n{{vars.symptom_reasoning}}\n\n{{vars.red_flags_text}}\n\n*Acude a urgencias INMEDIATAMENTE* o llama al *911*.\n\n_Este asistente no reemplaza atención médica profesional._",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "emergency_msg",
+      "position": {
+        "x": 1800,
+        "y": 100
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "🔎 Especialidad sugerida: *{{vars.specialty_name}}*\n\n_{{vars.symptom_reasoning}}_\n\nVoy a calcular tu copago en los hospitales de tu red…",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "send_specialty",
+      "position": {
+        "x": 2000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "Compute Estimate",
+          "function_slug": "compute-estimate",
+          "save_response_to": "_estimate_result"
+        },
+        "display_name": "Function: Compute Estimate",
+        "node_type": "function"
+      },
+      "id": "compute_estimate",
+      "position": {
+        "x": 2200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Hay hospitales con tarifa",
+              "id": "e3ef46cc-9dce-4cf2-8601-662e288e6138",
+              "label": "has_results"
+            },
+            {
+              "description": "No hay hospitales para esta especialidad",
+              "id": "2f25548a-f7f9-4a82-ae6e-9d0c59148c4c",
+              "label": "empty"
+            }
+          ],
+          "decision_type": "function",
+          "function_name": "Decide by Variable",
+          "function_slug": "decide-by-variable",
+          "llm_configuration": {}
+        },
+        "display_name": "Decision: Function",
+        "node_type": "decide"
+      },
+      "id": "decide_estimate",
+      "position": {
+        "x": 2400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "No hay hospitales con tarifa registrada para esta especialidad.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "no_results_msg",
+      "position": {
+        "x": 2400,
+        "y": 100
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "{{vars.estimate_summary}}",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "send_estimate_summary",
+      "position": {
+        "x": 2600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "{{vars.hospital_list}}\n\nResponde con el *número* del hospital para ver el desglose y recibir tu PDF.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "send_hospital_list",
+      "position": {
+        "x": 2800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "hospital_input",
+          "timeout_seconds": 300
+        },
+        "display_name": "Wait for Response (300s timeout)",
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_hospital",
+      "position": {
+        "x": 3000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "Compute Estimate",
+          "function_slug": "compute-estimate",
+          "save_response_to": "_hospital_selection_result"
+        },
+        "display_name": "Function: Compute Estimate",
+        "node_type": "function"
+      },
+      "id": "process_hospital",
+      "position": {
+        "x": 3200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Selección de hospital válida",
+              "id": "ddea0a30-1a42-4cbf-bd6c-715df87e8798",
+              "label": "valid"
+            },
+            {
+              "description": "Selección inválida",
+              "id": "08296b1a-cc5e-46a7-80f2-77911fda468d",
+              "label": "invalid"
+            }
+          ],
+          "decision_type": "function",
+          "function_name": "Decide by Variable",
+          "function_slug": "decide-by-variable",
+          "llm_configuration": {}
+        },
+        "display_name": "Decision: Function",
+        "node_type": "decide"
+      },
+      "id": "decide_hospital_valid",
+      "position": {
+        "x": 3400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "❌ Selección inválida. Por favor responde con el número del hospital de la lista.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "hospital_invalid_msg",
+      "position": {
+        "x": 3400,
+        "y": 100
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "{{vars.breakdown_text}}\n\nGenerando PDF con tu estimación…",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "send_breakdown",
+      "position": {
+        "x": 3600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "Compute Estimate",
+          "function_slug": "compute-estimate",
+          "save_response_to": "_pdf_result"
+        },
+        "display_name": "Function: Compute Estimate",
+        "node_type": "function"
+      },
+      "id": "generate_pdf",
+      "position": {
+        "x": 3800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "📄 Tu PDF está listo: {{vars.pdf_url}}",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "send_pdf_link",
+      "position": {
+        "x": 4000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_name": "Find Nearest Hospitals",
+          "function_slug": "find-nearest-hospitals",
+          "save_response_to": "_nearest_result"
+        },
+        "display_name": "Function: Find Nearest Hospitals",
+        "node_type": "function"
+      },
+      "id": "find_nearest",
+      "position": {
+        "x": 5200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "{{vars.location_text}}",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "send_location_results",
+      "position": {
+        "x": 5400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "📍 Toca el clip (📎) → *Ubicación* → *Compartir ubicación actual* para encontrar el hospital más cercano.\n\n(O envíame coordenadas como: -2.15,-79.9)",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "ask_share_location",
+      "position": {
+        "x": 4800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "location_input",
+          "timeout_seconds": 300
+        },
+        "display_name": "Wait for Response (300s timeout)",
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_location",
+      "position": {
+        "x": 5000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "enabled_default_tools": [
+            "send_notification_to_user",
+            "send_media",
+            "get_execution_metadata",
+            "get_whatsapp_context",
+            "get_current_datetime",
+            "save_variable",
+            "get_variable",
+            "ask_about_file",
+            "complete_task",
+            "handoff_to_human",
+            "enter_waiting"
+          ],
+          "flow_agent_app_integration_tools": [],
+          "flow_agent_function_tools": [],
+          "flow_agent_knowledge_bases": [],
+          "flow_agent_mcp_servers": [],
+          "flow_agent_resources": [],
+          "flow_agent_webhooks": [],
+          "max_iterations": 80,
+          "max_tokens": 8192,
+          "observer_prompt_mode": "analysis_only",
+          "provider_model_id": "198e85b6-554d-489b-b552-b405133c9306",
+          "provider_model_name": "gpt-5-mini",
+          "reasoning_effort": null,
+          "sandbox_allowed_outbound_hosts": [],
+          "sandbox_enabled": false,
+          "sandbox_network_mode": "allow_all",
+          "system_prompt": "Eres MediCopay, un asistente conversacional amable de cobertura médica por WhatsApp.\n- Eres conciso (máximo 4 líneas).\n- Hablas en español llano y empático.\n- Tu trabajo es ayudar al paciente a entender su seguro y cuánto pagaría por una atención antes de ir al hospital.\n- NO das diagnósticos ni recetas. Si te preguntan, redirige amablemente.\n- Si el paciente parece confundido, sugiere: \"describe tu síntoma y te diré cuánto pagarías\".\n- Si hay una estimación previa (vars.last_estimate), puedes referirte a ella para responder preguntas sobre copagos, hospitales o planes.",
+          "temperature": "0.0"
+        },
+        "display_name": "AI Agent",
+        "node_type": "agent"
+      },
+      "id": "chat_agent",
+      "position": {
+        "x": 600,
+        "y": 550
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "¿Necesitas algo más? Puedes escribirme un síntoma, enviar tu ubicación o preguntarme lo que necesites. Estoy aquí para ayudarte.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "location_followup",
+      "position": {
+        "x": 5600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "No pude verificar tu identidad después de varios intentos.\nEstos son los DNIs de demo disponibles:\n1712345678, 0998765432, 1798765432, 1701234567, 1234567890\n\nPuedes intentar con uno de esos, o preguntarme lo que necesites y te orientaré con información general.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "dni_max_attempts",
+      "position": {
+        "x": 1000,
+        "y": -150
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "ai_field_config": {},
+          "delay_seconds": 0,
+          "message": "¿Necesitas algo más? Puedes escribirme otro síntoma o preguntarme lo que necesites.\n\nSi quieres buscar hospitales cercanos, escribe *ubicación* o envíame tu ubicación por WhatsApp.",
+          "phone_number_id": null,
+          "provider_model_id": null,
+          "provider_model_name": null,
+          "to_phone_number": null,
+          "whatsapp_config_id": null
+        },
+        "display_name": "Send Text Message",
+        "node_type": "send_text"
+      },
+      "id": "estimate_done",
+      "position": {
+        "x": 4200,
+        "y": 200
+      },
+      "type": "flow-node"
+    }
+  ]
+}

@@ -1,0 +1,780 @@
+{
+  "edges": [
+    {
+      "label": "next",
+      "source": "start",
+      "target": "route_message"
+    },
+    {
+      "label": "next",
+      "source": "route_message",
+      "target": "decide_route"
+    },
+    {
+      "label": "identify",
+      "source": "decide_route",
+      "target": "ask_dni"
+    },
+    {
+      "label": "next",
+      "source": "ask_dni",
+      "target": "wait_dni"
+    },
+    {
+      "label": "next",
+      "source": "wait_dni",
+      "target": "process_dni"
+    },
+    {
+      "label": "next",
+      "source": "process_dni",
+      "target": "decide_dni"
+    },
+    {
+      "label": "invalid",
+      "source": "decide_dni",
+      "target": "dni_error"
+    },
+    {
+      "label": "next",
+      "source": "dni_error",
+      "target": "wait_dni"
+    },
+    {
+      "label": "max_attempts",
+      "source": "decide_dni",
+      "target": "dni_max_attempts"
+    },
+    {
+      "label": "valid",
+      "source": "decide_dni",
+      "target": "show_patient_info"
+    },
+    {
+      "label": "next",
+      "source": "show_patient_info",
+      "target": "ask_symptom"
+    },
+    {
+      "label": "symptom",
+      "source": "decide_route",
+      "target": "ask_symptom"
+    },
+    {
+      "label": "next",
+      "source": "ask_symptom",
+      "target": "wait_symptom"
+    },
+    {
+      "label": "next",
+      "source": "wait_symptom",
+      "target": "classify_symptom"
+    },
+    {
+      "label": "next",
+      "source": "classify_symptom",
+      "target": "decide_emergency"
+    },
+    {
+      "label": "emergency",
+      "source": "decide_emergency",
+      "target": "emergency_msg"
+    },
+    {
+      "label": "normal",
+      "source": "decide_emergency",
+      "target": "send_specialty"
+    },
+    {
+      "label": "empty",
+      "source": "decide_emergency",
+      "target": "ask_symptom"
+    },
+    {
+      "label": "next",
+      "source": "send_specialty",
+      "target": "compute_estimate"
+    },
+    {
+      "label": "estimate",
+      "source": "decide_route",
+      "target": "compute_estimate"
+    },
+    {
+      "label": "next",
+      "source": "compute_estimate",
+      "target": "decide_estimate"
+    },
+    {
+      "label": "empty",
+      "source": "decide_estimate",
+      "target": "no_results_msg"
+    },
+    {
+      "label": "has_results",
+      "source": "decide_estimate",
+      "target": "send_estimate_summary"
+    },
+    {
+      "label": "next",
+      "source": "send_estimate_summary",
+      "target": "send_hospital_list"
+    },
+    {
+      "label": "next",
+      "source": "send_hospital_list",
+      "target": "wait_hospital"
+    },
+    {
+      "label": "next",
+      "source": "wait_hospital",
+      "target": "process_hospital"
+    },
+    {
+      "label": "next",
+      "source": "process_hospital",
+      "target": "decide_hospital_valid"
+    },
+    {
+      "label": "invalid",
+      "source": "decide_hospital_valid",
+      "target": "hospital_invalid_msg"
+    },
+    {
+      "label": "next",
+      "source": "hospital_invalid_msg",
+      "target": "wait_hospital"
+    },
+    {
+      "label": "valid",
+      "source": "decide_hospital_valid",
+      "target": "send_breakdown"
+    },
+    {
+      "label": "next",
+      "source": "send_breakdown",
+      "target": "generate_pdf"
+    },
+    {
+      "label": "next",
+      "source": "generate_pdf",
+      "target": "send_pdf_link"
+    },
+    {
+      "label": "next",
+      "source": "send_pdf_link",
+      "target": "estimate_done"
+    },
+    {
+      "label": "location",
+      "source": "decide_route",
+      "target": "ask_share_location"
+    },
+    {
+      "label": "next",
+      "source": "ask_share_location",
+      "target": "wait_location"
+    },
+    {
+      "label": "next",
+      "source": "wait_location",
+      "target": "find_nearest"
+    },
+    {
+      "label": "next",
+      "source": "find_nearest",
+      "target": "send_location_results"
+    },
+    {
+      "label": "next",
+      "source": "send_location_results",
+      "target": "location_followup"
+    },
+    {
+      "label": "chat",
+      "source": "decide_route",
+      "target": "chat_agent"
+    }
+  ],
+  "nodes": [
+    {
+      "data": {
+        "config": {},
+        "node_type": "start"
+      },
+      "id": "start",
+      "position": {
+        "x": 50,
+        "y": 350
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "route-message",
+          "save_response_to": "route_result"
+        },
+        "node_type": "function"
+      },
+      "id": "route_message",
+      "position": {
+        "x": 200,
+        "y": 350
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Usuario nuevo, necesita identificación",
+              "label": "identify"
+            },
+            {
+              "description": "Preguntar síntoma directamente",
+              "label": "symptom"
+            },
+            {
+              "description": "Recalcular estimación",
+              "label": "estimate"
+            },
+            {
+              "description": "Buscar hospitales cercanos",
+              "label": "location"
+            },
+            {
+              "description": "Conversación general",
+              "label": "chat"
+            }
+          ],
+          "decision_type": "function",
+          "function_slug": "decide-by-variable"
+        },
+        "node_type": "decide"
+      },
+      "id": "decide_route",
+      "position": {
+        "x": 400,
+        "y": 350
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "👋 Hola, soy *MediCopay*, tu asistente de cobertura médica.\n\nPara estimar tu copago necesito identificarte.\nEnvíame tu *cédula* (solo números).\n\n*DNIs de demo disponibles:*\n1712345678, 0998765432, 1798765432, 1701234567, 1234567890"
+        },
+        "node_type": "send_text"
+      },
+      "id": "ask_dni",
+      "position": {
+        "x": 400,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "dni_input",
+          "timeout_seconds": 86400
+        },
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_dni",
+      "position": {
+        "x": 600,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "process-dni",
+          "save_response_to": "dni_result"
+        },
+        "node_type": "function"
+      },
+      "id": "process_dni",
+      "position": {
+        "x": 800,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "DNI válido y paciente encontrado",
+              "label": "valid"
+            },
+            {
+              "description": "DNI inválido o paciente no encontrado",
+              "label": "invalid"
+            },
+            {
+              "description": "Demasiados intentos fallidos de DNI",
+              "label": "max_attempts"
+            }
+          ],
+          "decision_type": "function",
+          "function_slug": "decide-by-variable"
+        },
+        "node_type": "decide"
+      },
+      "id": "decide_dni",
+      "position": {
+        "x": 1000,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "❌ No encontré el afiliado o la cédula es inválida.\nInténtalo de nuevo.\n\n*DNIs de demo:* 1712345678, 0998765432, 1798765432, 1701234567, 1234567890"
+        },
+        "node_type": "send_text"
+      },
+      "id": "dni_error",
+      "position": {
+        "x": 1000,
+        "y": -50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "No pude verificar tu identidad después de varios intentos.\nEstos son los DNIs de demo disponibles:\n1712345678, 0998765432, 1798765432, 1701234567, 1234567890\n\nPuedes intentar con uno de esos, o preguntarme lo que necesites y te orientaré con información general."
+        },
+        "node_type": "send_text"
+      },
+      "id": "dni_max_attempts",
+      "position": {
+        "x": 1000,
+        "y": -150
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "✅ ¡Hola *{{vars.patient_name}}*!\nPlan: *{{vars.plan_name}}*\nDeducible consumido: ${{vars.deductible_consumed}} / ${{vars.deductible_annual}}\n\nAhora cuéntame, *¿qué síntoma tienes?*"
+        },
+        "node_type": "send_text"
+      },
+      "id": "show_patient_info",
+      "position": {
+        "x": 1200,
+        "y": 50
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "🩺 Cuéntame qué síntoma tienes o qué tipo de consulta necesitas. Describe con tus palabras."
+        },
+        "node_type": "send_text"
+      },
+      "id": "ask_symptom",
+      "position": {
+        "x": 1200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "symptom_input",
+          "timeout_seconds": 86400
+        },
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_symptom",
+      "position": {
+        "x": 1400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "route-message",
+          "save_response_to": "_symptom_result"
+        },
+        "node_type": "function"
+      },
+      "id": "classify_symptom",
+      "position": {
+        "x": 1600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Input de síntoma vacío, muy corto o timeout",
+              "label": "empty"
+            },
+            {
+              "description": "No es emergencia",
+              "label": "normal"
+            },
+            {
+              "description": "Es una emergencia médica confirmada por datos",
+              "label": "emergency"
+            }
+          ],
+          "decision_type": "function",
+          "function_slug": "decide-by-variable"
+        },
+        "node_type": "decide"
+      },
+      "id": "decide_emergency",
+      "position": {
+        "x": 1800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "🚨 *POSIBLE EMERGENCIA MÉDICA* 🚨\n\n{{vars.symptom_reasoning}}\n\n{{vars.red_flags_text}}\n\n*Acude a urgencias INMEDIATAMENTE* o llama al *911*.\n\n_Este asistente no reemplaza atención médica profesional._"
+        },
+        "node_type": "send_text"
+      },
+      "id": "emergency_msg",
+      "position": {
+        "x": 1800,
+        "y": 100
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "🔎 Especialidad sugerida: *{{vars.specialty_name}}*\n\n_{{vars.symptom_reasoning}}_\n\nVoy a calcular tu copago en los hospitales de tu red…"
+        },
+        "node_type": "send_text"
+      },
+      "id": "send_specialty",
+      "position": {
+        "x": 2000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "compute-estimate",
+          "save_response_to": "_estimate_result"
+        },
+        "node_type": "function"
+      },
+      "id": "compute_estimate",
+      "position": {
+        "x": 2200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Hay hospitales con tarifa",
+              "label": "has_results"
+            },
+            {
+              "description": "No hay hospitales para esta especialidad",
+              "label": "empty"
+            }
+          ],
+          "decision_type": "function",
+          "function_slug": "decide-by-variable"
+        },
+        "node_type": "decide"
+      },
+      "id": "decide_estimate",
+      "position": {
+        "x": 2400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "No hay hospitales con tarifa registrada para esta especialidad."
+        },
+        "node_type": "send_text"
+      },
+      "id": "no_results_msg",
+      "position": {
+        "x": 2400,
+        "y": 100
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "{{vars.estimate_summary}}"
+        },
+        "node_type": "send_text"
+      },
+      "id": "send_estimate_summary",
+      "position": {
+        "x": 2600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "{{vars.hospital_list}}\n\nResponde con el *número* del hospital para ver el desglose y recibir tu PDF."
+        },
+        "node_type": "send_text"
+      },
+      "id": "send_hospital_list",
+      "position": {
+        "x": 2800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "hospital_input",
+          "timeout_seconds": 86400
+        },
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_hospital",
+      "position": {
+        "x": 3000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "compute-estimate",
+          "save_response_to": "_hospital_selection_result"
+        },
+        "node_type": "function"
+      },
+      "id": "process_hospital",
+      "position": {
+        "x": 3200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "conditions": [
+            {
+              "description": "Selección de hospital válida",
+              "label": "valid"
+            },
+            {
+              "description": "Selección inválida",
+              "label": "invalid"
+            }
+          ],
+          "decision_type": "function",
+          "function_slug": "decide-by-variable"
+        },
+        "node_type": "decide"
+      },
+      "id": "decide_hospital_valid",
+      "position": {
+        "x": 3400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "❌ Selección inválida. Por favor responde con el número del hospital de la lista."
+        },
+        "node_type": "send_text"
+      },
+      "id": "hospital_invalid_msg",
+      "position": {
+        "x": 3400,
+        "y": 100
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "{{vars.breakdown_text}}\n\nGenerando PDF con tu estimación…"
+        },
+        "node_type": "send_text"
+      },
+      "id": "send_breakdown",
+      "position": {
+        "x": 3600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "compute-estimate",
+          "save_response_to": "_pdf_result"
+        },
+        "node_type": "function"
+      },
+      "id": "generate_pdf",
+      "position": {
+        "x": 3800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "📄 Tu PDF está listo: {{vars.pdf_url}}"
+        },
+        "node_type": "send_text"
+      },
+      "id": "send_pdf_link",
+      "position": {
+        "x": 4000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "¿Necesitas algo más? Puedes escribirme otro síntoma o preguntarme lo que necesites.\n\nSi quieres buscar hospitales cercanos, escribe *ubicación* o envíame tu ubicación por WhatsApp."
+        },
+        "node_type": "send_text"
+      },
+      "id": "estimate_done",
+      "position": {
+        "x": 4200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "📍 Toca el clip (📎) → *Ubicación* → *Compartir ubicación actual* para encontrar el hospital más cercano.\n\n(O envíame coordenadas como: -2.15,-79.9)"
+        },
+        "node_type": "send_text"
+      },
+      "id": "ask_share_location",
+      "position": {
+        "x": 4800,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "has_timeout": true,
+          "save_response_to": "location_input",
+          "timeout_seconds": 86400
+        },
+        "node_type": "wait_for_response"
+      },
+      "id": "wait_location",
+      "position": {
+        "x": 5000,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "function_slug": "find-nearest-hospitals",
+          "save_response_to": "_nearest_result"
+        },
+        "node_type": "function"
+      },
+      "id": "find_nearest",
+      "position": {
+        "x": 5200,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "{{vars.location_text}}"
+        },
+        "node_type": "send_text"
+      },
+      "id": "send_location_results",
+      "position": {
+        "x": 5400,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "message": "¿Necesitas algo más? Puedes escribirme un síntoma, enviar tu ubicación o preguntarme lo que necesites. Estoy aquí para ayudarte."
+        },
+        "node_type": "send_text"
+      },
+      "id": "location_followup",
+      "position": {
+        "x": 5600,
+        "y": 200
+      },
+      "type": "flow-node"
+    },
+    {
+      "data": {
+        "config": {
+          "provider_model_name": "gpt-5-mini",
+          "system_prompt": "Eres MediCopay, un asistente conversacional amable de cobertura médica por WhatsApp.\n- Eres conciso (máximo 4 líneas).\n- Hablas en español llano y empático.\n- Tu trabajo es ayudar al paciente a entender su seguro y cuánto pagaría por una atención antes de ir al hospital.\n- NO das diagnósticos ni recetas. Si te preguntan, redirige amablemente.\n- Si el paciente parece confundido, sugiere: \"describe tu síntoma y te diré cuánto pagarías\".\n- Si hay una estimación previa (vars.last_estimate), puedes referirte a ella para responder preguntas sobre copagos, hospitales o planes."
+        },
+        "node_type": "agent"
+      },
+      "id": "chat_agent",
+      "position": {
+        "x": 600,
+        "y": 550
+      },
+      "type": "flow-node"
+    }
+  ]
+}
